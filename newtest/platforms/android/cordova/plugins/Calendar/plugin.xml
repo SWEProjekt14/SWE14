@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="Calendar"
+    version="0.1">
+
+    <name>Calendar</name>
+    <author>Gruppe14</author>
+
+	<js-module src="www/Calendar.js" name="Calendar">
+        <clobbers target="calendar" />
+    </js-module>
+	
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+           <feature name="Calendar">
+              <param name="android-package" value="com.example.hello.Calendar"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/Calendar.java"
+                target-dir="src/com/example/hello" />
+    </platform>
+</plugin>
