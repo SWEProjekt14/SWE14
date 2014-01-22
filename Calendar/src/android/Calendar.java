@@ -1,4 +1,4 @@
-package com.example.hello;
+package de.rwth.swe.calendar;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
