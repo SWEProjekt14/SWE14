@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.CalendarContract.Events;
@@ -17,6 +18,8 @@ public class Calendar extends CordovaPlugin{
 
 	public static final String ACTION_ADD_CALENDAR_ENTRY = "addCalendarEntry";
 	public static final String ACTION_DELETE_CALENDAR_ENTRY = "deleteCalendarEntry";
+	public static final String ACTION_EDIT_CALENDAR_ENTRY = "editCalendarEntry";
+	public static final String ACTION_SEARCH_CALENDAR_ENTRY = "searchCalendarEntry";
 	
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callback){
@@ -40,6 +43,20 @@ public class Calendar extends CordovaPlugin{
 		    	System.out.println("[Calendar] Deleted Rows: " + rows);
 		    	callback.success();
 		    	return true;
+		    } else if(ACTION_SEARCH_CALENDAR_ENTRY.equals(action)){
+		    	// TODO: Argumente beachten
+		    	Cursor cursor = cordova.getActivity().getContentResolver().query(Events.CONTENT_URI, new String[]{Events._ID}, null, null, null);
+		    	cursor.moveToFirst();
+		    	StringBuilder builder = new StringBuilder();
+		    	if(cursor.getCount()>0 ){
+		    		builder.append(cursor.getLong(0));
+		    		while(cursor.moveToNext()){
+		    			builder.append(" " + cursor.getLong(0));
+		    		}
+		    	}
+		    	callback.success(builder.toString());
+		    	return true;
+		    	
 		    } else{
 			    callback.error("Invalid action");
 			    return false;
