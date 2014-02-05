@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="Calendar"
-    version="0.2">
+    version="0.3">
 
     <name>Calendar</name>
     <author>SWE Gruppe14</author>
@@ -19,7 +19,12 @@
             </feature>
         </config-file>
 
-        <source-file src="src/android/Calendar.java"
-                target-dir="src/de/rwth/swe/calendar" />
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<!--uses-sdk android:minSdkVersion="14" android:targetSdkVersion="19" /-->
+			<uses-permission android:name="android.permission.READ_CALENDAR"/>
+			<uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+        </config-file>
+		
+        <source-file src="src/android/Calendar.java" target-dir="src/de/rwth/swe/calendar" />
     </platform>
 </plugin>
