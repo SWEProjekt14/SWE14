@@ -17,16 +17,20 @@
 				div.innerHTML=param;
 			};		
 			var success = function() { 
-				alert("Success"); 
-				feedback("Success");
+				alert("Success!!"); 
+				feedback("Success!!");
+			};		
+			var success2 = function(message) { 
+				alert("Success2!!"); 
+				feedback("Success2!! '"+message+"'");
 			};
 			var error = function(message) { 
-				alert("Alert Fehler! " + message); 
-				feedback("Fail");
+				alert("Alert Fehler!! " + "'"+message+"'"); 
+				feedback("Fail!!");
 			};
 			
 			// In dieser Methode definieren, was beim Klick passieren soll.
-			function klick (){
+			function klick1 (){
 				// Inhalt aus den Eingaben holen, kann nun weiterverwendet werden.
 				var text1 = retrieve("text1");
 				var text2 = retrieve("text2");
@@ -34,36 +38,52 @@
 				var text4 = retrieve("text4");
 				var text5 = retrieve("text5");
 				var text6 = retrieve("text6");
+				var text7 = retrieve("text7");
 				
-				feedback("Calendar Plugin ist nicht aktiv!");
-				// Das wuerde dann ggf. durch die textfelder ersetzt werden
-				var startDate = new Date("February 10, 2014 8:00:00");
-				var endDate = new Date("February 10, 2013 18:00:00");
-				var title = "PhoneGap Eintrag erstellt";
-				var location = "MATSE";
-				var notes = "Ein paar Notizen.";
-				calendar.createEvent(title, location, notes, startDate, endDate, success, error);
-			}	
+				//feedback("Calendar Plugin ist nicht aktiv oder L&auml;dt noch!");
+				calendar.createEvent(text1, text2, text3, new Date(text4), new Date(text5), success, error);
+			};
+			function klick2(){
+				var text1 = retrieve("text1");
+				var text2 = retrieve("text2");
+				var text3 = retrieve("text3");
+				var text4 = retrieve("text4");
+				var text5 = retrieve("text5");
+				var text6 = retrieve("text6");
+				var text7 = retrieve("text7");
+				
+				calendar.searchEvent(text1, text2, text3, new Date(text4), new Date(text5), success2, error);
+			};
+			function klick3(){
+				var text7 = retrieve("text7");
+				
+				calendar.deleteEvent(text7, success, error);
+			}
+			
 		</script>
 		</head>
 		<body bgcolor="lightgray">
 		<h3>Calendar Testseite</h3>        
 		
 		TextFeld 1: 
-		<input id="text1" type="text" size="30" maxlength="30"><br />
+		<input id="text1" type="text" size="30" maxlength="30" value="PhoneGap Kalender Eintrag erstellt"><br />
 		TextFeld 2: 
-		<input id="text2" type="text" size="30" maxlength="30"><br/>
+		<input id="text2" type="text" size="30" maxlength="30" value="Hier"><br/>
 		TextFeld 3: 
-		<input id="text3" type="text" size="30" maxlength="30"><br/>
+		<input id="text3" type="text" size="30" maxlength="30" value="Ein paar kleine Notizen"><br/>
 		TextFeld 4: 
-		<input id="text4" type="text" size="30" maxlength="30"><br/>
+		<input id="text4" type="text" size="30" maxlength="30" value="February 12, 2014 8:00:00"><br/>
 		TextFeld 5: 
-		<input id="text5" type="text" size="30" maxlength="30"><br/>
+		<input id="text5" type="text" size="30" maxlength="30" value="February 12, 2014 18:00:00"><br/>
 		TextFeld 6: 
-		<input id="text6" type="text" size="30" maxlength="30"><br/>
+		<input id="text6" type="text" size="30" maxlength="30" value="unused"><br/>
 	
-        <input type="button" value="Dr&uuml;ck Mich" onclick="klick()"><br />
-        
+        <input type="button" value="Einfuegen" onclick="klick1()"><input type="button" value="Suchen" onclick="klick2()"><br />
+        <br />
+		TextFeld 7: 
+		<input id="text7" type="text" size="30" maxlength="30" value="Event-Id zum L&ouml;schen"><br/>
+		<input type="button" value="Loeschen" onclick="klick3()">
+		<br />
 		Feedback:<br />
         <b><div id="feed">-</div></b>        
 		
