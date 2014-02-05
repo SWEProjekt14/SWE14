@@ -13,6 +13,14 @@ var calendar =  {
                 "endTimeMillis": endDate.getTime()
             }]
         );
+    },
+    deleteEvent: function(eventId, successCallback, errorCallback){
+    	cordova.exec(
+                successCallback,
+                errorCallback, 
+                'Calendar',
+                'deleteCalendarEntry',
+                [eventId] );
     }
 }
 module.exports = calendar;
