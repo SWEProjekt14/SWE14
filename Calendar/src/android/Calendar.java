@@ -1,5 +1,7 @@
 package de.rwth.swe.calendar;
 
+import java.util.Date;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
@@ -44,19 +46,36 @@ public class Calendar extends CordovaPlugin{
 		    	callback.success();
 		    	return true;
 		    } else if(ACTION_SEARCH_CALENDAR_ENTRY.equals(action)){
+		    	String title = args.getString(0);
+		    	if(title == null || title.isEmpty()) title = "%";
+		    	String notes = args.getString(1);
+		    	if(notes == null || notes.isEmpty()) notes = "%";
+		    	String location = args.getString(2);
+		    	if(location == null || location.isEmpty()) location = "%";
+		    	String start = args.getString(3);
+		    	if(start == null || start.isEmpty()) start = "%";
+		    	String end = args.getString(4);
+		    	if(end == null || end.isEmpty()) end = "%";
 		    	// TODO: Argumente beachten
-		    	Cursor cursor = cordova.getActivity().getContentResolver().query(Events.CONTENT_URI, new String[]{Events._ID}, null, null, null);
+		    	String search = "("+Events.TITLE+" LIKE ? AND "+
+		    			Events.DESCRIPTION + " LIKE ? AND " +
+		    			Events.EVENT_LOCATION + " LIKE ? AND "+
+		    			Events.DTSTART + " LIKE ? AND " + 
+		    			Events.DTEND + " LIKE ?)";
+		    	Cursor cursor = cordova.getActivity().getContentResolver()
+		    			.query(Events.CONTENT_URI, new String[]{Events._ID}, null, null, null);
+//    			.query(Events.CONTENT_URI, new String[]{Events._ID}, search, new String[]{title, notes, location, start, end}, null);
 		    	cursor.moveToFirst();
-		    	StringBuilder builder = new StringBuilder();
+
+		    	JSONArray retArray = new JSONArray();
 		    	if(cursor.getCount()>0 ){
-		    		builder.append(cursor.getLong(0));
+		    		retArray.put(cursor.getLong(0));
 		    		while(cursor.moveToNext()){
-		    			builder.append(" " + cursor.getLong(0));
+				    	retArray.put(cursor.getLong(0));
 		    		}
 		    	}
-		    	callback.success(builder.toString());
+		    	callback.success(retArray);
 		    	return true;
-		    	
 		    } else{
 			    callback.error("Invalid action");
 			    return false;

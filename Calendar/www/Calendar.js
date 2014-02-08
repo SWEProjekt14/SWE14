@@ -20,7 +20,8 @@ var calendar =  {
                 errorCallback, 
                 'Calendar',
                 'deleteCalendarEntry',
-                [eventId] );
+                [eventId] 
+    	);
     },
     searchEvent: function(title, notes, location, startDate, endDate, successCallback, errorCallback){
     	cordova.exec(
@@ -28,7 +29,8 @@ var calendar =  {
                 errorCallback, 
                 'Calendar',
                 'searchCalendarEntry',
-                [title, notes, location, startDate.getTime(), endDate.getTime()] );
+                [title, notes, location, startDate.getTime(), endDate.getTime()] 
+        );
     }
 }
 module.exports = calendar;
