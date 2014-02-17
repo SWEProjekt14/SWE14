@@ -27,4 +27,14 @@
 		
         <source-file src="src/android/Calendar.java" target-dir="src/de/rwth/swe/calendar" />
     </platform>
+    
+	<!-- Windows Phone 8  -->
+	<platform name="wp8">
+		<config-file target="config.xml" parent="/*">
+	   <feature name="Calendar">
+	      <param name="wp-package" value="Calendar"/>
+	    </feature>
+	</config-file>
+		<source-file src="src/wp/Calendar.cs" />
+	</platform>
 </plugin>
