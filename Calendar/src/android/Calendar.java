@@ -1,7 +1,5 @@
 package de.rwth.swe.calendar;
 
-import java.util.Date;
-
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
@@ -27,14 +25,13 @@ public class Calendar extends CordovaPlugin{
 	public boolean execute(String action, JSONArray args, CallbackContext callback){
 		try {
 		    if (ACTION_ADD_CALENDAR_ENTRY.equals(action)) {
-		             JSONObject arg_object = args.getJSONObject(0);
-		             Intent calIntent = new Intent(Intent.ACTION_EDIT)
-		        .setType("vnd.android.cursor.item/event")
-		        .putExtra("beginTime", arg_object.getLong("startTimeMillis"))
-		        .putExtra("endTime", arg_object.getLong("endTimeMillis"))
-		        .putExtra("title", arg_object.getString("title"))
-		        .putExtra("description", arg_object.getString("description"))
-		        .putExtra("eventLocation", arg_object.getString("eventLocation"));
+		    	Intent calIntent = new Intent(Intent.ACTION_EDIT)
+			        .setType("vnd.android.cursor.item/event")
+			        .putExtra("beginTime", args.getString(3))
+			        .putExtra("endTime", args.getString(4))
+			        .putExtra("title", args.getString(0))
+			        .putExtra("description", args.getString(1))
+			        .putExtra("eventLocation", args.getString(2));
 		 
 		       this.cordova.getActivity().startActivity(calIntent);
 		       callback.success();
@@ -60,8 +57,8 @@ public class Calendar extends CordovaPlugin{
 		    	String search = "("+Events.TITLE+" LIKE ? AND "+
 		    			Events.DESCRIPTION + " LIKE ? AND " +
 		    			Events.EVENT_LOCATION + " LIKE ? AND "+
-		    			Events.DTSTART + " LIKE ? AND " + 
-		    			Events.DTEND + " LIKE ?)";
+		    			Events.DTSTART + " = ? AND " + 
+		    			Events.DTEND + " = ?)";
 		    	Cursor cursor = cordova.getActivity().getContentResolver()
 		    			.query(Events.CONTENT_URI, new String[]{Events._ID}, null, null, null);
 //    			.query(Events.CONTENT_URI, new String[]{Events._ID}, search, new String[]{title, notes, location, start, end}, null);
