@@ -1,9 +1,11 @@
 package de.rwth.swe.calendar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import android.annotation.TargetApi;
 import android.content.ContentUris;
@@ -27,22 +29,22 @@ public class Calendar extends CordovaPlugin{
 		    if (ACTION_ADD_CALENDAR_ENTRY.equals(action)) {
 		    	Intent calIntent = new Intent(Intent.ACTION_EDIT)
 			        .setType("vnd.android.cursor.item/event")
-			        .putExtra("beginTime", args.getString(3))
-			        .putExtra("endTime", args.getString(4))
-			        .putExtra("title", args.getString(0))
-			        .putExtra("description", args.getString(1))
-			        .putExtra("eventLocation", args.getString(2));
+			        .putExtra(Events.DTSTART, args.getString(3))
+			        .putExtra(Events.DTEND, args.getString(4))
+			        .putExtra(Events.TITLE, args.getString(0))
+			        .putExtra(Events.DESCRIPTION, args.getString(1))
+			        .putExtra(Events.EVENT_LOCATION, args.getString(2));
 		 
 		       this.cordova.getActivity().startActivity(calIntent);
 		       callback.success();
 		       return true;
 		    } else if(ACTION_DELETE_CALENDAR_ENTRY.equals(action)){
 		    	Uri deleteUri = ContentUris.withAppendedId(Events.CONTENT_URI, args.getLong(0));
-		    	int rows = cordova.getActivity().getContentResolver().delete(deleteUri, null, null);
-		    	System.out.println("[Calendar] Deleted Rows: " + rows);
+		    	cordova.getActivity().getContentResolver().delete(deleteUri, null, null);
 		    	callback.success();
 		    	return true;
 		    } else if(ACTION_SEARCH_CALENDAR_ENTRY.equals(action)){
+		    	List<String> params = new ArrayList<String>();
 		    	String title = args.getString(0);
 		    	if(title == null || title.isEmpty()) title = "%";
 		    	String notes = args.getString(1);
@@ -51,17 +53,24 @@ public class Calendar extends CordovaPlugin{
 		    	if(location == null || location.isEmpty()) location = "%";
 		    	String start = args.getString(3);
 		    	if(start == null || start.isEmpty()) start = "%";
+		    	else params.add(start);
 		    	String end = args.getString(4);
 		    	if(end == null || end.isEmpty()) end = "%";
-		    	// TODO: Argumente beachten
-		    	String search = "("+Events.TITLE+" LIKE ? AND "+
+		    	else params.add(end);
+		    	
+		    	params.add(title);
+		    	params.add(notes);
+		    	params.add(location);
+		    	params.add(title);
+
+		    	String search = "("+Events.TITLE+" LIKE ? AND "+ 
 		    			Events.DESCRIPTION + " LIKE ? AND " +
-		    			Events.EVENT_LOCATION + " LIKE ? AND "+
-		    			Events.DTSTART + " = ? AND " + 
-		    			Events.DTEND + " = ?)";
-		    	Cursor cursor = cordova.getActivity().getContentResolver()
-		    			.query(Events.CONTENT_URI, new String[]{Events._ID}, null, null, null);
-//    			.query(Events.CONTENT_URI, new String[]{Events._ID}, search, new String[]{title, notes, location, start, end}, null);
+		    			Events.EVENT_LOCATION + " LIKE ?"+
+		    			(start.equals("%")? "" : " AND "+Events.DTSTART + " = ?")+ 
+		    			(end.equals("%") ? "" : " AND "+Events.DTEND + " = ?") + ")";
+		    	
+		    	Cursor cursor = cordova.getActivity().getContentResolver()		    	
+		    			.query(Events.CONTENT_URI, new String[]{Events._ID}, search, (String[])params.toArray(), null);
 		    	cursor.moveToFirst();
 
 		    	JSONArray retArray = new JSONArray();
