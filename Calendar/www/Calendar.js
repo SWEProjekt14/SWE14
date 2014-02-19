@@ -1,10 +1,10 @@
 var calendar =  {
     createEvent: function(title, notes, location, startDate, endDate, successCallback, errorCallback) {
         cordova.exec(
-            successCallback, // success callback function
-            errorCallback, // error callback function
-            'Calendar', // mapped to our native Java class called "Calendar"
-            'addCalendarEntry', // with this action name
+            successCallback,
+            errorCallback,
+            'Calendar', 
+            'addCalendarEntry', 
             [title, notes, location, startDate.getTime(), endDate.getTime()]
         );
     },
@@ -28,3 +28,5 @@ var calendar =  {
     }
 }
 module.exports = calendar;
+
+

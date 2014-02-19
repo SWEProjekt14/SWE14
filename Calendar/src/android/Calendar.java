@@ -29,8 +29,10 @@ public class Calendar extends CordovaPlugin{
 		    if (ACTION_ADD_CALENDAR_ENTRY.equals(action)) {
 		    	Intent calIntent = new Intent(Intent.ACTION_EDIT)
 			        .setType("vnd.android.cursor.item/event")
-			        .putExtra(Events.DTSTART, args.getString(3))
-			        .putExtra(Events.DTEND, args.getString(4))
+			    	// TODO: benoetigtes time-format bsp: 1392811200000
+			        // bekomme Format bsp: 1392811262697 ????
+			        .putExtra(Events.DTSTART, args.getLong(3))
+			        .putExtra(Events.DTEND, args.getLong(4))
 			        .putExtra(Events.TITLE, args.getString(0))
 			        .putExtra(Events.DESCRIPTION, args.getString(1))
 			        .putExtra(Events.EVENT_LOCATION, args.getString(2));
@@ -53,26 +55,24 @@ public class Calendar extends CordovaPlugin{
 		    	if(location == null || location.isEmpty()) location = "%";
 		    	String start = args.getString(3);
 		    	if(start == null || start.isEmpty()) start = "%";
-		    	else params.add(start);
+//		    	else params.add(start);
 		    	String end = args.getString(4);
 		    	if(end == null || end.isEmpty()) end = "%";
-		    	else params.add(end);
+//		    	else params.add(end);
 		    	
 		    	params.add(title);
 		    	params.add(notes);
 		    	params.add(location);
-		    	params.add(title);
-
 		    	String search = "("+Events.TITLE+" LIKE ? AND "+ 
 		    			Events.DESCRIPTION + " LIKE ? AND " +
-		    			Events.EVENT_LOCATION + " LIKE ?"+
+		    			Events.EVENT_LOCATION + " LIKE ?)";/*+
 		    			(start.equals("%")? "" : " AND "+Events.DTSTART + " = ?")+ 
 		    			(end.equals("%") ? "" : " AND "+Events.DTEND + " = ?") + ")";
-		    	
-		    	Cursor cursor = cordova.getActivity().getContentResolver()		    	
-		    			.query(Events.CONTENT_URI, new String[]{Events._ID}, search, (String[])params.toArray(), null);
+		    	*/
+		    	Cursor cursor = cordova.getActivity().getContentResolver()
+		    			.query(Events.CONTENT_URI, new String[]{Events._ID}, search, params.toArray(new String[0]), null);
 		    	cursor.moveToFirst();
-
+		    	
 		    	JSONArray retArray = new JSONArray();
 		    	if(cursor.getCount()>0 ){
 		    		retArray.put(cursor.getLong(0));
