@@ -59,6 +59,16 @@
 				
 				calendar.deleteEvent(text7, success, error);
 			}
+			function klick4(){
+				var text1 = retrieve("text1");
+				var text2 = retrieve("text2");
+				var text3 = retrieve("text3");
+				var text4 = retrieve("text4");
+				var text5 = retrieve("text5");
+				var text6 = retrieve("text6");
+				var text7 = retrieve("text7");
+				calendar.editEvent(text7, text1, text2, text3, new Date(text4), new Date(text5), success, error);
+				};
 			
 		</script>
 		</head>
@@ -84,6 +94,7 @@
 		L&ouml;schen: 
 		<input id="text7" type="text" size="30" maxlength="30" value="Event-Id zum L&ouml;schen"><br/>
 		<input type="button" value="Loeschen" onclick="klick3()">
+		<input type="button" value="Bearbeiten" onclick="klick4()">
 		<br />
 		Feedback:<br />
         <b><div id="feed">-</div></b>        
