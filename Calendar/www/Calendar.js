@@ -1,13 +1,22 @@
-cordova.define("Calendar.Calendar", function(require, exports, module) { var calendar =  {
+var calendar =  {
     createEvent: function(title, notes, location, startDate, endDate, successCallback, errorCallback) {
         cordova.exec(
-            successCallback,
-            errorCallback,
-            'Calendar', 
-            'addCalendarEntry', 
-            [title, notes, location, startDate.getTime(), endDate.getTime()]
+	            successCallback,
+	            errorCallback,
+	            'Calendar', 
+	            'addCalendarEntry', 
+	            [title, notes, location, startDate.getTime(), endDate.getTime()]
         );
     },
+    createEventInteractive: function(title, notes, location, startDate, endDate, successCallback, errorCallback) {
+        cordova.exec(
+	            successCallback,
+	            errorCallback,
+	            'Calendar', 
+	            'addCalendarEntryInteractive', 
+	            [title, notes, location, startDate.getTime(), endDate.getTime()]
+        );
+    }, 
     deleteEvent: function(eventId, successCallback, errorCallback){
     	cordova.exec(
                 successCallback,
@@ -17,27 +26,32 @@ cordova.define("Calendar.Calendar", function(require, exports, module) { var cal
                 [eventId] 
     	);
     },
-    searchEvent: function(title, notes, location, startDate, endDate, successCallback, errorCallback){
+    searchEventId: function(title, notes, location, startDate, endDate, successCallback, errorCallback){
+    	cordova.exec(
+                successCallback,
+                errorCallback, 
+                'Calendar',
+                'searchCalendarEntryId',
+                [title, notes, location, startDate.getTime(), endDate.getTime()] 
+        );
+    },
+    searchEvent: function(eventId, successCallback, errorCallback){
     	cordova.exec(
                 successCallback,
                 errorCallback, 
                 'Calendar',
                 'searchCalendarEntry',
-                [title, notes, location, startDate.getTime(), endDate.getTime()] 
+                [eventId] 
         );
     },
     editEvent: function(id,title, notes, location, startDate, endDate, successCallback, errorCallback) {
         cordova.exec(
-            successCallback,
-            errorCallback,
-            'Calendar', 
-            'editCalendarEntry', 
-            [id,title, notes, location, startDate.getTime(), endDate.getTime()]
+	            successCallback,
+	            errorCallback,
+	            'Calendar', 
+	            'editCalendarEntry', 
+	            [id,title, notes, location, startDate.getTime(), endDate.getTime()]
         );
     }
 }
 module.exports = calendar;
-
-
-
-});
