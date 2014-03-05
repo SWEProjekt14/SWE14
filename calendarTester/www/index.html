@@ -10,95 +10,208 @@
 				var txtbox = document.getElementById(id);
 				var value = txtbox.value;
 				return value;
-			}
-			// Text in den Feedbackbereich schreiben
+			};
 			var feedback = function (param){
 				var div = document.getElementById("feed");
-				div.innerHTML=param;
-			};		
+				var date = new Date();
+				div.innerHTML="["+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] "+param;
+			};
 			var success = function() { 
-				alert("Success!!"); 
-				feedback("Success!!");
-			};		
+				alert("Success!"); 
+				feedback("Success!");
+			};
 			var success2 = function(message) { 
-				alert("Success2!!"); 
-				feedback("Success2!! '"+message+"'");
+				alert("Success! '" + message + "'"); 
+				feedback("Success! '"+message+"'");
 			};
 			var error = function(message) { 
-				alert("Alert Fehler!! " + "'"+message+"'"); 
-				feedback("Fail!!");
+				alert("Fail! " + "'"+message+"'"); 
+				feedback("Fail! '" + message + "'");
 			};
 			
-			// In dieser Methode definieren, was beim Klick passieren soll.
-			function klick1 (){
-				// Inhalt aus den Eingaben holen, kann nun weiterverwendet werden.
-				var text1 = retrieve("text1");
-				var text2 = retrieve("text2");
-				var text3 = retrieve("text3");
-				var text4 = retrieve("text4");
-				var text5 = retrieve("text5");
-				var text6 = retrieve("text6");
-				var text7 = retrieve("text7");
+			function addEvent(){
+				var text1 = retrieve("textAdd1");
+				var text2 = retrieve("textAdd2");
+				var text3 = retrieve("textAdd3");
+				var text4 = retrieve("textAdd4");
+				var text5 = retrieve("textAdd5");
 				
-				//feedback("Calendar Plugin ist nicht aktiv oder L&auml;dt noch!");
-				calendar.createEvent(text1, text2, text3, new Date(text4), new Date(text5), success, error);
+				calendar.createEvent(text1, text2, text3, new Date(text4), new Date(text5), function(){feedback("Neuer Eintrag erstellt");}, error);
 			};
-			function klick2(){
-				var text1 = retrieve("text1");
-				var text2 = retrieve("text2");
-				var text3 = retrieve("text3");
-				var text4 = retrieve("text4");
-				var text5 = retrieve("text5");
-				var text6 = retrieve("text6");
-				var text7 = retrieve("text7");
+			function addEventInteractive(){
+				var text1 = retrieve("textAdd1");
+				var text2 = retrieve("textAdd2");
+				var text3 = retrieve("textAdd3");
+				var text4 = retrieve("textAdd4");
+				var text5 = retrieve("textAdd5");
 				
-				calendar.searchEvent(text1, text2, text3, new Date(text4), new Date(text5), success2, error);
+				calendar.createEventInteractive(text1, text2, text3, new Date(text4), new Date(text5), function(){feedback("Neuer Eintrag erstellt");}, error);
 			};
-			function klick3(){
-				var text7 = retrieve("text7");
+			function searchEvent(){
+				var text1 = retrieve("textSearch1");
+				var text2 = retrieve("textSearch2");
+				var text3 = retrieve("textSearch3");
+				var text4 = retrieve("textSearch4");
+				var text5 = retrieve("textSearch5");
 				
-				calendar.deleteEvent(text7, success, error);
-			}
-			function klick4(){
-				var text1 = retrieve("text1");
-				var text2 = retrieve("text2");
-				var text3 = retrieve("text3");
-				var text4 = retrieve("text4");
-				var text5 = retrieve("text5");
-				var text6 = retrieve("text6");
-				var text7 = retrieve("text7");
-				calendar.editEvent(text7, text1, text2, text3, new Date(text4), new Date(text5), success, error);
-				};
+				calendar.searchEvent(text1, text2, text3, new Date(text4), new Date(text5), function(result){feedback("Gefundene Ergebnisse: '"+result+"'");}, error);
+			};
+			function deleteEvent(){
+				var text1 = retrieve("textDelete1");
+				
+				calendar.deleteEvent(text1, function(){feedback("Event '"+text1 + "' gelöscht.");}, error);
+			};
+			function editEvent(){
+				var text1 = retrieve("textEdit1");
+				var text2 = retrieve("textEdit2");
+				var text3 = retrieve("textEdit3");
+				var text4 = retrieve("textEdit4");
+				var text5 = retrieve("text5Edit");
+				var text0 = retrieve("text0Edit");
+				calendar.editEvent(text0, text1, text2, text3, new Date(text4), new Date(text5), function(){feedback("Eintrag bearbeitet.");}, error);
+			};
 			
 		</script>
-		</head>
-		<body bgcolor="lightgray">
-		<h3>Calendar Testseite</h3>        
-		<table>
-		<tr>
-		<td>Titel: </td>
-		<td><input id="text1" type="text" size="30" maxlength="30" value="PhoneGap Kalender Eintrag erstellt"></td></tr>
-		<td>Notes: </td>
-		<td><input id="text2" type="text" size="30" maxlength="30" value="Ein paar kleine Notizen"></td></tr>
-		<td>Location: </td>
-		<td><input id="text3" type="text" size="30" maxlength="30" value="Hier"></td></tr>
-		<td>Start Date: </td>
-		<td><input id="text4" type="text" size="30" maxlength="30" value="February 12, 2014 8:00:00"></td></tr>
-		<td>End Date: </td>
-		<td><input id="text5" type="text" size="30" maxlength="30" value="February 12, 2014 18:00:00"></td></tr>
-		<td>Sonstiges: </td>
-		<td><input id="text6" type="text" size="30" maxlength="30" value="unused"></td></tr>
-		</table>
-        <input type="button" value="Einfuegen" onclick="klick1()"><input type="button" value="Suchen" onclick="klick2()"><br />
-        <br />
-		L&ouml;schen: 
-		<input id="text7" type="text" size="30" maxlength="30" value="Event-Id zum L&ouml;schen"><br/>
-		<input type="button" value="Loeschen" onclick="klick3()">
-		<input type="button" value="Bearbeiten" onclick="klick4()">
-		<br />
-		Feedback:<br />
+		<style type="text/css">
+			article.navi section {
+				position:absolute;
+				//display: block;
+				width:95%;
+				height: 70%;
+				top: 130px;
+				background-color: darkgray;
+			}
+			article.navi section h4{
+				position:absolute;
+				//left: 0;
+				top:-25px;
+				//width:124px;
+				height: 24px;
+				margin: 0;
+				//z-index: 1;
+				background-color: #424242;
+				border-radius: 15px 15px 0 0;
+				border: solid #ffffff;
+				border-width: 1px 1px 0 0;
+			}
+			article.navi section h4 a {
+				display: block;
+				margin: 2px 0 0 0;
+				text-align: center;
+				text-decoration: none;
+				color: white;
+			}
+			article.navi section:nth-child(2) h4 {
+				left: 85px;
+				z-index: 0;
+			}
+			article.navi section:nth-child(3) h4 {
+				left: 168px;
+				z-index: 0;
+			}
+			article.navi section:nth-child(4) h4 {
+				left: 225px;
+				z-index: 0;
+			}
+			article.navi section:target{
+				color: black;
+				background-color: darkgray;
+				z-index: 1;
+			}
+			article.navi section:target h4{
+				color: black;
+				background-color: white;
+				z-index: 1;
+			}
+			article.navi section:target h4 a {
+				color: #424242;
+			}
+			#feedback {
+				//margin-top: 290px;
+				
+			}
+		</style>
+	</head>
+	<body bgcolor="darkgray">
+	<h3>Calendar Testseite</h3>
+	<article class="navi">
+		<section id="add">
+			<h4 style="width:87px;"><a href="#add"> Hinzuf&uuml;gen </a> </h4>
+			<p>
+				<table>
+					<tr>
+						<td>Titel: </td>
+						<td><input id="textAdd1" type="text" size="30" maxlength="30" value="PhoneGap Kalender Eintrag erstellt"></td></tr>
+						<td>Notes: </td>
+						<td><input id="textAdd2" type="text" size="30" maxlength="30" value="Ein paar kleine Notizen"></td></tr>
+						<td>Location: </td>
+						<td><input id="textAdd3" type="text" size="30" maxlength="30" value="Hier und Dort"></td></tr>
+						<td><b>Start Date: </b></td>
+						<td><input id="textAdd4" type="text" size="30" maxlength="30" value="February 27, 2014 8:00:00"></td></tr>
+						<td><b>End Date: </b></td>
+						<td><input id="textAdd5" type="text" size="30" maxlength="30" value="February 27, 2014 18:00:00"></td></tr>
+					</tr>
+				</table>			
+				<input type="button" value="Einfuegen" onclick="addEvent()">
+				<input type="button" value="Einfuegen (Interactive)" onclick="addEventInteractive()">
+			</p>
+		</section>
+		<section id="edit">
+			<h4 style="width:86px;"><a href="#edit"> Bearbeiten </a> </h4>
+			<p>
+				<table>
+					<tr>
+						<td><b>Id: </b></td>
+						<td><input id="textEdit0" type="text" size="30" maxlength="30"></td></tr>
+						<td>Titel: </td>
+						<td><input id="textEdit1" type="text" size="30" maxlength="30"></td></tr>
+						<td>Notes: </td>
+						<td><input id="textEdit2" type="text" size="30" maxlength="30"></td></tr>
+						<td>Location: </td>
+						<td><input id="textEdit3" type="text" size="30" maxlength="30"></td></tr>
+						<td>Start Date: </td>
+						<td><input id="textEdit4" type="text" size="30" maxlength="30"></td></tr>
+						<td>End Date: </td>
+						<td><input id="textEdit5" type="text" size="30" maxlength="30"></td></tr>
+					</tr>
+				</table>
+				<input type="button" value="Bearbeiten" onclick="editEvent()">	
+			</p>
+		</section>
+		<section id="search">
+			<h4 style="width:60px;"><a href="#search"> Suchen </a> </h4>
+			<p>					
+				<table>
+					<tr>
+						<td>Titel: </td>
+						<td><input id="textSearch1" type="text" size="30" maxlength="30"></td></tr>
+						<td>Notes: </td>
+						<td><input id="textSearch2" type="text" size="30" maxlength="30"></td></tr>
+						<td>Location: </td>
+						<td><input id="textSearch3" type="text" size="30" maxlength="30"></td></tr>
+						<td>Start Date: </td>
+						<td><input id="textSearch4" type="text" size="30" maxlength="30"></td></tr>
+						<td>End Date: </td>
+						<td><input id="textSearch5" type="text" size="30" maxlength="30"></td></tr>
+					</tr>
+				</table>
+				<input type="button" value="Suchen" onclick="searchEvent()">
+			</p>
+		</section>			
+		<section id="del">
+			<h4 style="width:65px;"><a href="#del"> L&ouml;schen </a> </h4>
+			<p>
+				<table>
+					<td><b>Id:</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td><input id="text1" type="text" size="30" maxlength="30"></td></tr>
+				</table>						
+				<input type="button" value="Loeschen" onclick="deleteEvent()">
+			</p>
+		</section>
+        		
+		<div id="feedback">Feedback:
         <b><div id="feed">-</div></b>        
-		
+		</div>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
