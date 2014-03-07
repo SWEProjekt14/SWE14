@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="Calendar"
-    version="0.3">
+    id="de.rwth.swe.calendar"
+    version="1.0">
 
     <name>Calendar</name>
     <author>SWE Gruppe14</author>
@@ -37,4 +37,22 @@
 	</config-file>
 		<source-file src="src/wp/Calendar.cs" />
 	</platform>
+	
+	<!-- iOS  -->
+	<platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="CalendarPlugin">
+                <param name="ios-package" value="CalendarPlugin"/>
+            </feature>
+        </config-file>
+
+        <js-module src="www/Calendar.js" name="Calendar">
+            <clobbers target="calendar" />
+        </js-module>
+
+        <header-file src="src/ios/CalendarPlugin.h" />
+        <source-file src="src/ios/CalendarPlugin.m" />
+
+    </platform>
+	
 </plugin>
