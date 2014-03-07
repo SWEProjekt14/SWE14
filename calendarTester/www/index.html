@@ -58,7 +58,6 @@
 				var dend = new Date(0);
 				if(text4 != ""){
 					dstart = new Date(text4);
-					alert("startDate: "+text4);
 				}
 				if(text5 != ""){
 					dend = new Date(text5);
@@ -92,11 +91,9 @@
 				var dend = new Date(0);
 				if(text4 != "" && text4 != "null"){
 					dstart = new Date(text4);
-					alert("startDate: "+text4);
 				}
 				if(text5 != "" && text5 != "null"){
 					dend = new Date(text5);
-					alert("endDate: "+text5);
 				}
 				calendar.editEvent(text0, text1, text2, text3, dstart, dend, function(){feedback("Eintrag bearbeitet.");}, error);
 			};

@@ -74,21 +74,26 @@ public class Calendar extends CordovaPlugin {
 				String dEnd = "";
 				List<String> params = new ArrayList<String>();
 				String title = args.getString(0);
-				if (title == null || title.isEmpty())
+				if (title == null || title.isEmpty() || title.equals("null"))
 					title = "%";
 				String notes = args.getString(1);
-				if (notes == null || notes.isEmpty())
+				if (notes == null || notes.isEmpty() || notes.equals("null"))
 					notes = "%";
 				String location = args.getString(2);
-				if (location == null || location.isEmpty())
+				if (location == null || location.isEmpty()  || location.equals("null"))
 					location = "%";
 				String start = args.getString(3);
-				if (!(start == null || start.isEmpty()))
+				if (!(start == null || start.isEmpty()  || start.equals("0")))
 					dBegin = (" AND " + Events.DTSTART + " = " + start);
 				String end = args.getString(4);
-				if (!(end == null || end.isEmpty()))
+				if (!(end == null || end.isEmpty() || end.equals("0")))
 					dEnd = (" AND " + Events.DTEND + " = " + end);
-
+				
+				if(true){
+					callback.success(title + " " + notes + " " + location + " " dBegin + " " dEnd);
+					return true;
+				}
+				
 				params.add(title);
 				params.add(notes);
 				params.add(location);
@@ -121,20 +126,20 @@ public class Calendar extends CordovaPlugin {
 				ContentResolver cr = this.cordova.getActivity().getContentResolver();
 				ContentValues cv = new ContentValues();
 				
-				if(args.getString(1)!=null) {
+				if(args.getString(1)!=null && args.getString(1)!="null") {
 					cv.put(Events.TITLE, args.getString(1));
 				}
-				if(args.getString(2)!=null) {
+				if(args.getString(2)!=null&& args.getString(2)!="null") {
 					cv.put(Events.DESCRIPTION, args.getString(2));
 				}
 				if(args.getString(3)!=null) {
-					cv.put(Events.EVENT_LOCATION, args.getString(3));
+					cv.put(Events.EVENT_LOCATION, && args.getString(3)!="null");
 				}
 				if(args.getString(4)!=null) {
-					cv.put(Events.DTSTART, args.getLong(4));
+					cv.put(Events.DTSTART, args.getLong(4)&& args.getString(4)!="null");
 				}
 				if(args.getString(5)!=null) {
-					cv.put(Events.DTEND, args.getLong(5));
+					cv.put(Events.DTEND, args.getLong(5)&& args.getString(5)!="null");
 				}
 				cr.update(uri, cv, null, null);
 				callback.success();
