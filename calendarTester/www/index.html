@@ -54,7 +54,17 @@
 				var text4 = retrieve("textSearch4");
 				var text5 = retrieve("textSearch5");
 				
-				calendar.searchEvent(text1, text2, text3, new Date(text4), new Date(text5), function(result){feedback("Gefundene Ergebnisse: '"+result+"'");}, error);
+				var dstart = new Date(0);
+				var dend = new Date(0);
+				if(text4 != ""){
+					dstart = new Date(text4);
+					alert("startDate: "+text4);
+				}
+				if(text5 != ""){
+					dend = new Date(text5);
+				}
+				
+				calendar.searchEventId(text1, text2, text3, dstart, dend,  function(result){feedback("Gefundene Ergebnisse: '"+result+"'");}, error);
 			};
 			function deleteEvent(){
 				var text1 = retrieve("textDelete1");
@@ -62,13 +72,33 @@
 				calendar.deleteEvent(text1, function(){feedback("Event '"+text1 + "' gelöscht.");}, error);
 			};
 			function editEvent(){
-				var text1 = retrieve("textEdit1");
-				var text2 = retrieve("textEdit2");
-				var text3 = retrieve("textEdit3");
+				var text1;
+				if(retrieve("textEdit1") != "null"){
+					text1 = retrieve("textEdit1");
+				}
+				var text2;
+				if(retrieve("textEdit2") != "null"){
+					text2 = retrieve("textEdit2");
+				}
+				var text3;
+				if(retrieve("textEdit3") != "null"){
+					text3 = retrieve("textEdit3");
+				}
 				var text4 = retrieve("textEdit4");
-				var text5 = retrieve("text5Edit");
-				var text0 = retrieve("text0Edit");
-				calendar.editEvent(text0, text1, text2, text3, new Date(text4), new Date(text5), function(){feedback("Eintrag bearbeitet.");}, error);
+				var text5 = retrieve("textEdit5");
+				var text0 = retrieve("textEdit0");
+				
+				var dstart = new Date(0);
+				var dend = new Date(0);
+				if(text4 != "" && text4 != "null"){
+					dstart = new Date(text4);
+					alert("startDate: "+text4);
+				}
+				if(text5 != "" && text5 != "null"){
+					dend = new Date(text5);
+					alert("endDate: "+text5);
+				}
+				calendar.editEvent(text0, text1, text2, text3, dstart, dend, function(){feedback("Eintrag bearbeitet.");}, error);
 			};
 			
 		</script>
@@ -203,7 +233,7 @@
 			<p>
 				<table>
 					<td><b>Id:</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-					<td><input id="text1" type="text" size="30" maxlength="30"></td></tr>
+					<td><input id="textDelete1" type="text" size="30" maxlength="30"></td></tr>
 				</table>						
 				<input type="button" value="Loeschen" onclick="deleteEvent()">
 			</p>
