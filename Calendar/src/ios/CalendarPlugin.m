@@ -1,13 +1,13 @@
-#import "CalendarPlugin.h"
+#import "Calendar.h"
 #import <Cordova/CDV.h>
 #import <EventKitUI/EventKitUI.h>
 #import <EventKit/EventKit.h>
 
-@implementation CalendarPlugin
+@implementation Calendar
 @synthesize eventStore;
 
 - (CDVPlugin*) initWithWebView:(UIWebView*)theWebView {
-    self = (CalendarPlugin*)[super initWithWebView:theWebView];
+    self = (Calendar*)[super initWithWebView:theWebView];
     if (self) {
         [self initEventStoreWithCalendarCapabilities];
     }
@@ -37,13 +37,13 @@
                         calendar: (EKCalendar*) calendar {
     
     NSString *callbackId = command.callbackId;
-    NSDictionary *options = [command.arguments objectAtIndex:0];
+
     
-    NSString *title = [options objectForKey: @"title"];
-    NSString *location = [options objectForKey: @"location"];
-    NSString *notes = [options objectForKey: @"notes"];
-    NSNumber *startTime = [options objectForKey: @"startTime"];
-    NSNumber *endTime = [options objectForKey: @"endTime"];
+    NSString *title = [command.arguments objectAtIndex:0];
+    NSString *location = [command.arguments objectAtIndex:1];
+    NSString *notes = [command.arguments objectAtIndex:2];
+    NSNumber *startTime = [command.arguments objectAtIndex:3];
+    NSNumber *endTime = [command.arguments objectAtIndex:4];
     
     NSTimeInterval _startInterval = [startTime doubleValue] / 1000;
     NSDate *myStartDate = [NSDate dateWithTimeIntervalSince1970:_startInterval];
@@ -74,6 +74,7 @@
     NSError *error = nil;
     [self.eventStore saveEvent:myEvent span:EKSpanThisEvent error:&error];
 
+    NSLog(@"%@", myEvent.eventIdentifier);
     if (error) {
         CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.userInfo.description];
         [self writeJavascript:[pluginResult toErrorCallbackString:callbackId]];
@@ -84,27 +85,30 @@
     }
 }
  
-- (void)createEvent:(CDVInvokedUrlCommand*)command {
+- (void)addCalendarEntry:(CDVInvokedUrlCommand*)command {
     EKCalendar* calendar = self.eventStore.defaultCalendarForNewEvents;
     [self createEventWithCalendar:command calendar:calendar];
 }
 
 
 
--(void) deleteEvent:(CDVInvokedUrlCommand *)command
+-(void) deleteCalendarEntry:(CDVInvokedUrlCommand *)command
    {
 
 
     NSString *callbackId=command.callbackId;
-    NSDictionary *options = [command.arguments objectAtIndex:0];
+
     
-    NSString *identifier = [options objectForKey:@"identifier"];
+    NSString *identifier = [command.arguments objectAtIndex:0];
     EKEvent* event= [eventStore eventWithIdentifier:identifier];
-    NSError* error = nil;
-    if(event!=nil)
+       NSError* error = nil;
+       
+       NSLog(@"%@", identifier);
+    
+       if(event!=nil)
     {
-        
       [eventStore removeEvent:event span:EKSpanThisEvent error:&error];
+        NSLog(@"Erfolg");
     }
 
     if(error){
@@ -116,21 +120,21 @@
     }
    
 }
--(void) modifyEvent:(CDVInvokedUrlCommand *) command
+-(void) editCalendarEntry:(CDVInvokedUrlCommand *) command
 {
     
     NSString* callback=command.callbackId;
-    NSDictionary *options = [command.arguments objectAtIndex:0];
         
-        NSString *identifier = [options objectForKey:@"identifier"];
+        NSString *identifier = [command.arguments objectAtIndex:0];
             EKEvent* event= [eventStore eventWithIdentifier:identifier];
 if(event!=nil)
 {
-    NSString* newtitle     = [options objectForKey:@"title"];
-    NSString* newlocation  = [options objectForKey:@"location"];
-    NSString* newnotes     = [options objectForKey:@"notes"];
-    NSNumber* newstartTime = [options objectForKey:@"startTime"];
-    NSNumber* newendTime   = [options objectForKey:@"endTime"];
+    
+    NSString *newtitle = [command.arguments objectAtIndex:1];
+    NSString *newlocation = [command.arguments objectAtIndex:2];
+    NSString *newnotes = [command.arguments objectAtIndex:3];
+    NSNumber *newstartTime = [command.arguments objectAtIndex:4];
+    NSNumber *newendTime = [command.arguments objectAtIndex:5];
     
     
     if (newtitle) {
@@ -171,53 +175,76 @@ if(event!=nil)
 }
 
 
--(NSString*) searchEvent:(CDVInvokedUrlCommand*) command
+-(NSString*) searchCalendarEntryId:(CDVInvokedUrlCommand*) command
                {
 
-    NSDictionary *options = [command.arguments objectAtIndex:0];
-    
-    NSString *title = [options objectForKey:@"title"];
-    NSString *location = [options objectForKey:@"location"];
-    NSString *notes = [options objectForKey:@"notes"];
-    NSNumber *startTime = [options objectForKey:@"startTime"];
-    NSNumber *endTime = [options objectForKey:@"endTime"];
-  
+                   NSString *title = [command.arguments objectAtIndex:0];
+                   NSString *location = [command.arguments objectAtIndex:1];
+                   NSString *notes = [command.arguments objectAtIndex:2];
+                   NSNumber *startTime = [command.arguments objectAtIndex:3];
+                   NSNumber *endTime = [command.arguments objectAtIndex:4];
+                   
+                   NSLog(@"Title  %@",title);
+                   NSLog(@"Location %@",location);
+                   NSLog(@"Notes %@",notes);
+                   
+                   
                    NSTimeInterval startInterval = [startTime doubleValue] / 1000;
                    NSDate *startDate = [NSDate dateWithTimeIntervalSince1970:startInterval];
                    
                    NSTimeInterval endInterval = [endTime doubleValue] / 1000;
                    NSDate *endDate = [NSDate dateWithTimeIntervalSince1970:endInterval];
+                   
+                   
     EKCalendar* calendar = self.eventStore.defaultCalendarForNewEvents;
     NSMutableString *predicateString = [[NSMutableString alloc] initWithString:@""];
-   
-    if (title.length > 0) {
+        NSLog(@"VOr forschleife");
+    //if (![title isEqualToString:@"null"]) {
         [predicateString appendString:[NSString stringWithFormat:@"title == '%@'", title]];
-    }
-    if (location.length > 0) {
+    //}
+    //if (![location isEqualToString:@"null"]) {
         [predicateString appendString:[NSString stringWithFormat:@" AND location == '%@'", location]];
-    }
-    if (notes.length > 0) {
+    //}
+   // if (![notes isEqualToString:@"null"]) {
         [predicateString appendString:[NSString stringWithFormat:@" AND notes == '%@'", notes]];
-    }
-    
+    //}
+                        NSLog(@"Nach forschleife");
+                   /*
+                   if ([title isEqualToString:@"NULL"]) {
+                       [predicateString appendString:[NSString stringWithFormat:@"title == '%@'", title]];
+                   }
+                   if ([location isEqualToString:@"NULL"]) {
+                       [predicateString appendString:[NSString stringWithFormat:@" AND location == '%@'", location]];
+                   }
+                   if ([notes isEqualToString:@"NULL"]) {
+                       [predicateString appendString:[NSString stringWithFormat:@" AND notes == '%@'", notes]];
+                   }
+    */
     
     NSPredicate *matches = [NSPredicate predicateWithFormat:predicateString];
     
     NSArray *calendarArray = [NSArray arrayWithObject:calendar];
     
     NSArray *datedEvents = [self.eventStore eventsMatchingPredicate:[eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:calendarArray]];
-    
+     //  NSArray *matchingEvents = [self.eventStore eventsMatchingPredicate:matches];
     NSArray *matchingEvents = [datedEvents filteredArrayUsingPredicate:matches];
     
    NSMutableArray *matchingId= [NSMutableArray arrayWithCapacity:[matchingEvents count]];
-
+     NSLog(@"Nach filter");
     for(EKEvent *event in matchingEvents){
         [matchingId addObject:event.eventIdentifier];
     }
      
    
                    NSString *json= [matchingId JSONString];
-            
+              NSString *callbackId = command.callbackId;
+               
+                       CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:json];
+                       [self writeJavascript:[pluginResult toSuccessCallbackString:callbackId]];
+                   NSLog(@"%@",json);
+                   
+                   
+                   
     return json;
 }
 
