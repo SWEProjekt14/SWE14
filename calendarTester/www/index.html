@@ -48,9 +48,20 @@
 				calendar.createEventInteractive(text1, text2, text3, new Date(text4), new Date(text5), function(){feedback("Neuer Eintrag erstellt");}, error);
 			};
 			function searchEvent(){
-				var text1 = retrieve("textSearch1");
-				var text2 = retrieve("textSearch2");
-				var text3 = retrieve("textSearch3");
+			
+				var text1;
+				if(retrieve("textSearch1") != ""){
+					text1 = retrieve("textSearch1");
+				}
+				var text2;
+				if(retrieve("textSearch2") != ""){
+					text2 = retrieve("textSearch2");
+				}
+				var text3;
+				if(retrieve("textSearch3") != ""){
+					text3 = retrieve("textSearch3");
+				}
+				
 				var text4 = retrieve("textSearch4");
 				var text5 = retrieve("textSearch5");
 				
@@ -58,6 +69,7 @@
 				var dend = new Date(0);
 				if(text4 != ""){
 					dstart = new Date(text4);
+					alert("startDate: "+text4);
 				}
 				if(text5 != ""){
 					dend = new Date(text5);
@@ -72,15 +84,15 @@
 			};
 			function editEvent(){
 				var text1;
-				if(retrieve("textEdit1") != "null"){
+				if(retrieve("textEdit1") != ""){
 					text1 = retrieve("textEdit1");
 				}
 				var text2;
-				if(retrieve("textEdit2") != "null"){
+				if(retrieve("textEdit2") != ""){
 					text2 = retrieve("textEdit2");
 				}
 				var text3;
-				if(retrieve("textEdit3") != "null"){
+				if(retrieve("textEdit3") != ""){
 					text3 = retrieve("textEdit3");
 				}
 				var text4 = retrieve("textEdit4");
@@ -89,10 +101,10 @@
 				
 				var dstart = new Date(0);
 				var dend = new Date(0);
-				if(text4 != "" && text4 != "null"){
+				if(text4 != ""){
 					dstart = new Date(text4);
 				}
-				if(text5 != "" && text5 != "null"){
+				if(text5 != ""){
 					dend = new Date(text5);
 				}
 				calendar.editEvent(text0, text1, text2, text3, dstart, dend, function(){feedback("Eintrag bearbeitet.");}, error);

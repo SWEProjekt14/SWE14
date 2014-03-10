@@ -11,16 +11,12 @@ import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
-import android.provider.ContactsContract.CommonDataKinds.Event;
-import android.renderscript.Sampler.Value;
-import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class Calendar extends CordovaPlugin {
@@ -50,7 +46,6 @@ public class Calendar extends CordovaPlugin {
 				callback.success();
 				return true;
 			} else if (ACTION_ADD_CALENDAR_ENTRY.equals(action)){
-				// TODO: Testen
 				ContentResolver cr = this.cordova.getActivity().getContentResolver();
 				ContentValues values = new ContentValues();
 				values.put(Events.CALENDAR_ID, 1);
@@ -74,26 +69,21 @@ public class Calendar extends CordovaPlugin {
 				String dEnd = "";
 				List<String> params = new ArrayList<String>();
 				String title = args.getString(0);
-				if (title == null || title.isEmpty() || title.equals("null"))
+				if (isNull(title))
 					title = "%";
 				String notes = args.getString(1);
-				if (notes == null || notes.isEmpty() || notes.equals("null"))
+				if (isNull(notes))
 					notes = "%";
 				String location = args.getString(2);
-				if (location == null || location.isEmpty()  || location.equals("null"))
+				if (isNull(location))
 					location = "%";
 				String start = args.getString(3);
-				if (!(start == null || start.isEmpty()  || start.equals("0")))
+				if (!(start == null || start.isEmpty() || start.equals("0")))
 					dBegin = (" AND " + Events.DTSTART + " = " + start);
 				String end = args.getString(4);
 				if (!(end == null || end.isEmpty() || end.equals("0")))
 					dEnd = (" AND " + Events.DTEND + " = " + end);
-				
-				if(true){
-					callback.success(title + " " + notes + " " + location + " " dBegin + " " dEnd);
-					return true;
-				}
-				
+
 				params.add(title);
 				params.add(notes);
 				params.add(location);
@@ -125,21 +115,21 @@ public class Calendar extends CordovaPlugin {
 				Uri uri = ContentUris.withAppendedId(Events.CONTENT_URI, args.getLong(0));
 				ContentResolver cr = this.cordova.getActivity().getContentResolver();
 				ContentValues cv = new ContentValues();
-				
-				if(args.getString(1)!=null && args.getString(1)!="null") {
+
+				if(!isNull(args.getString(1))) {
 					cv.put(Events.TITLE, args.getString(1));
 				}
-				if(args.getString(2)!=null&& args.getString(2)!="null") {
+				if(!isNull(args.getString(2))) {
 					cv.put(Events.DESCRIPTION, args.getString(2));
 				}
-				if(args.getString(3)!=null) {
-					cv.put(Events.EVENT_LOCATION, && args.getString(3)!="null");
+				if(!isNull(args.getString(3))) {
+					cv.put(Events.EVENT_LOCATION, args.getString(3));
 				}
-				if(args.getString(4)!=null) {
-					cv.put(Events.DTSTART, args.getLong(4)&& args.getString(4)!="null");
+				if(!isNull(args.getString(4)) && !args.getString(4).equals("0")) {
+					cv.put(Events.DTSTART, args.getLong(4));
 				}
-				if(args.getString(5)!=null) {
-					cv.put(Events.DTEND, args.getLong(5)&& args.getString(5)!="null");
+				if(!isNull(args.getString(5)) && !args.getString(5).equals("0")) {
+					cv.put(Events.DTEND, args.getLong(5));
 				}
 				cr.update(uri, cv, null, null);
 				callback.success();
@@ -154,5 +144,9 @@ public class Calendar extends CordovaPlugin {
 			callback.error(e.getMessage());
 			return false;
 		}
+	}
+	
+	private boolean isNull(String test){
+		return test == null || test.equals("null");
 	}
 }
