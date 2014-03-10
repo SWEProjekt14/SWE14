@@ -15,7 +15,7 @@ namespace WPCordovaClassLib.Cordova.Commands
     class Calendar : BaseCommand
     { 
          
-        public void addCalendarEntry(string options)
+        public void addCalendarEntryInteractive(string options)
         {
             string[] args = JsonHelper.Deserialize<string[]>(options);
             long timestampStart = Convert.ToInt64(args[3]);
@@ -34,18 +34,37 @@ namespace WPCordovaClassLib.Cordova.Commands
 
         }
 
+        public void addCalendarEntry(string options)
+        {
+            string[] args = JsonHelper.Deserialize<string[]>(options);
+            
+            this.DispatchCommandResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
+        }
+        
+        public void editCalendarEntry(string options)
+        {
+            string[] args = JsonHelper.Deserialize<string[]>(options);
+            
+            this.DispatchCommandResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
+        }
+        
         public void deleteCalendarEntry(string options)
         {
             string[] args = JsonHelper.Deserialize<string[]>(options);
             
             this.DispatchCommandResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
-
         }
-
+        
         public void searchCalendarEntry(string options)
         {
             string[] args = JsonHelper.Deserialize<string[]>(options);
+            
+            this.DispatchCommandResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
+        }
 
+        public void searchCalendarEntryId(string options)
+        {
+            string[] args = JsonHelper.Deserialize<string[]>(options);
 
             this.DispatchCommandResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
 
